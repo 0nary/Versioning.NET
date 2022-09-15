@@ -17,8 +17,6 @@ namespace Application.Extensions
             switch (increment)
             {
                 case VersionIncrement.Unknown:
-                    increment = VersionIncrement.None;
-                    break;
                 case VersionIncrement.None:
                 case VersionIncrement.Patch:
                 case VersionIncrement.Minor:

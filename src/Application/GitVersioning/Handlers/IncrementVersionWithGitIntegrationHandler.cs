@@ -52,10 +52,8 @@ namespace Application.GitVersioning.Handlers
         /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
         public async Task<Unit> Handle(IncrementVersionWithGitIntegrationCommand request, CancellationToken cancellationToken)
         {
-            var query = new GetCommitVersionInfosQuery { GitDirectory = request.GitDirectory, RemoteTarget = request.RemoteTarget, TipBranchName = request.BranchName };
-            List<GitCommitVersionInfo> versionInfos = (await _mediator.Send(query, cancellationToken)).ToList();
-            VersionIncrement increment = _gitVersioningService.DeterminePriorityIncrement(versionInfos.Select(x => x.VersionIncrement));
-            _logger.LogInformation($"Increment '{increment}' was determined from the commits.");
+            var query = new GetVersionIncrementQuery { GitDirectory = request.GitDirectory, RemoteTarget = request.RemoteTarget, BranchName = request.BranchName, SearchOption = request.SearchOption, TargetDirectory = request.TargetDirectory };
+            VersionIncrement increment = await _mediator.Send(query, cancellationToken);
 
 
             if (increment == VersionIncrement.None || increment == VersionIncrement.Unknown)
@@ -75,7 +73,7 @@ namespace Application.GitVersioning.Handlers
                 Directory = request.TargetDirectory,
                 SearchOption = request.SearchOption,
                 VersionIncrement = increment,
-                ExitBeta = versionInfos.Any(x => x.ExitBeta)
+                ExitBeta = false
             };
             await _mediator.Send(command, cancellationToken);
 
