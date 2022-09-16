@@ -45,7 +45,7 @@ namespace Business.Tests.GitVersioning
             var logger = new NullLogger<IncrementVersionWithGitIntegrationHandler>();
 
             gitVersioningService.Setup(x => x.DeterminePriorityIncrement(It.IsAny<IEnumerable<VersionIncrement>>())).Returns(VersionIncrement.None);
-            mediator.Setup(x => x.Send(It.IsAny<GetCommitVersionInfosQuery>(), CancellationToken.None)).ReturnsAsync(new List<GitCommitVersionInfo>());
+            mediator.Setup(x => x.Send(It.IsAny<GetVersionIncrementQuery>(), CancellationToken.None)).ReturnsAsync(new VersionIncrement());
             mediator.Setup(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None)).ReturnsAsync(Unit.Value);
             var sut = new IncrementVersionWithGitIntegrationHandler(mediator.Object, gitService.Object, gitVersioningService.Object, assemblyVersioningService.Object, logger);
 
@@ -53,7 +53,7 @@ namespace Business.Tests.GitVersioning
             await sut.Handle(new IncrementVersionWithGitIntegrationCommand(), CancellationToken.None);
 
             // Assert
-            mediator.Verify(x => x.Send(It.IsAny<GetCommitVersionInfosQuery>(), CancellationToken.None), Times.Once);
+            mediator.Verify(x => x.Send(It.IsAny<GetVersionIncrementQuery>(), CancellationToken.None), Times.Once);
             mediator.Verify(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None), Times.Never);
             gitService.Verify(x => x.GetCommits(It.IsAny<string>()), Times.Never);
             assemblyVersioningService.Verify(x => x.GetLatestAssemblyVersion(It.IsAny<string>(), It.IsAny<SearchOption>()), Times.Never);
@@ -71,7 +71,7 @@ namespace Business.Tests.GitVersioning
             var logger = new NullLogger<IncrementVersionWithGitIntegrationHandler>();
 
             gitVersioningService.Setup(x => x.DeterminePriorityIncrement(It.IsAny<IEnumerable<VersionIncrement>>())).Returns(VersionIncrement.Unknown);
-            mediator.Setup(x => x.Send(It.IsAny<GetCommitVersionInfosQuery>(), CancellationToken.None)).ReturnsAsync(new List<GitCommitVersionInfo>());
+            mediator.Setup(x => x.Send(It.IsAny<GetVersionIncrementQuery>(), CancellationToken.None)).ReturnsAsync(new VersionIncrement());
             mediator.Setup(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None)).ReturnsAsync(Unit.Value);
             var sut = new IncrementVersionWithGitIntegrationHandler(mediator.Object, gitService.Object, gitVersioningService.Object, assemblyVersioningService.Object, logger);
 
@@ -79,7 +79,7 @@ namespace Business.Tests.GitVersioning
             await sut.Handle(new IncrementVersionWithGitIntegrationCommand(), CancellationToken.None);
 
             // Assert
-            mediator.Verify(x => x.Send(It.IsAny<GetCommitVersionInfosQuery>(), CancellationToken.None), Times.Once);
+            mediator.Verify(x => x.Send(It.IsAny<GetVersionIncrementQuery>(), CancellationToken.None), Times.Once);
             mediator.Verify(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None), Times.Never);
             gitService.Verify(x => x.GetCommits(It.IsAny<string>()), Times.Never);
             assemblyVersioningService.Verify(x => x.GetLatestAssemblyVersion(It.IsAny<string>(), It.IsAny<SearchOption>()), Times.Never);
@@ -108,7 +108,7 @@ namespace Business.Tests.GitVersioning
             var logger = new NullLogger<IncrementVersionWithGitIntegrationHandler>();
 
             gitVersioningService.Setup(x => x.DeterminePriorityIncrement(It.IsAny<IEnumerable<VersionIncrement>>())).Returns(VersionIncrement.Minor);
-            mediator.Setup(x => x.Send(It.IsAny<GetCommitVersionInfosQuery>(), CancellationToken.None)).ReturnsAsync(new List<GitCommitVersionInfo>());
+            mediator.Setup(x => x.Send(It.IsAny<GetVersionIncrementQuery>(), CancellationToken.None)).ReturnsAsync(new VersionIncrement());
             mediator.Setup(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None)).ReturnsAsync(Unit.Value);
 
             gitService.Setup(x => x.GetCommits(It.IsAny<string>())).Returns(Commits);
@@ -144,7 +144,7 @@ namespace Business.Tests.GitVersioning
             var logger = new NullLogger<IncrementVersionWithGitIntegrationHandler>();
 
             gitVersioningService.Setup(x => x.DeterminePriorityIncrement(It.IsAny<IEnumerable<VersionIncrement>>())).Returns(VersionIncrement.Minor);
-            mediator.Setup(x => x.Send(It.IsAny<GetCommitVersionInfosQuery>(), CancellationToken.None)).ReturnsAsync(new List<GitCommitVersionInfo>());
+            mediator.Setup(x => x.Send(It.IsAny<GetVersionIncrementQuery>(), CancellationToken.None)).ReturnsAsync(new VersionIncrement());
             mediator.Setup(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None)).ReturnsAsync(Unit.Value);
 
             gitService.Setup(x => x.GetCommits(It.IsAny<string>())).Returns(Commits);
@@ -155,7 +155,7 @@ namespace Business.Tests.GitVersioning
             await sut.Handle(request, CancellationToken.None);
 
             // Assert
-            mediator.Verify(x => x.Send(It.IsAny<GetCommitVersionInfosQuery>(), CancellationToken.None), Times.Once);
+            mediator.Verify(x => x.Send(It.IsAny<GetVersionIncrementQuery>(), CancellationToken.None), Times.Once);
             mediator.Verify(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None), Times.Once);
             assemblyVersioningService.Verify(x => x.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption), Times.Exactly(2));
             gitService.Verify(x => x.CommitChanges(request.GitDirectory, commit.Subject, request.CommitAuthorEmail), Times.Once);

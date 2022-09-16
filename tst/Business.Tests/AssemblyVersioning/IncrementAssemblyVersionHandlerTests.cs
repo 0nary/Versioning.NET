@@ -99,7 +99,7 @@ namespace Business.Tests.AssemblyVersioning
         }
 
         [Fact]
-        public async Task BetaVersion_SetsIncrementToNone_WhenIncrementIsUnknown()
+        public async Task BetaVersion_StaysUnknown_WhenIncrementIsUnknown()
         {
             // Arrange
             var request = new IncrementAssemblyVersionCommand
@@ -116,7 +116,7 @@ namespace Business.Tests.AssemblyVersioning
             await sut.Handle(request, CancellationToken.None);
 
             // Assert
-            service.Verify(x => x.IncrementVersion(VersionIncrement.None, It.IsAny<string>(), It.IsAny<SearchOption>()), Times.Once);
+            service.Verify(x => x.IncrementVersion(VersionIncrement.Unknown, It.IsAny<string>(), It.IsAny<SearchOption>()), Times.Once);
         }
 
         [Fact]
