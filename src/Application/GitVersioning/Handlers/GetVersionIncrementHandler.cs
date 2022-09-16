@@ -61,7 +61,7 @@ namespace Application.GitVersioning.Handlers
 
             SemVersion assemblyVersion = _assemblyVersioningService.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption);
 
-            if (assemblyVersion < new SemVersion(1) && !versionInfos.Any(x => x.ExitBeta))
+            if (!versionInfos.Any(x => x.ExitBeta) && assemblyVersion < new SemVersion(1))
             {
                 _logger.LogInformation($"Assembly currently in beta. Lowering increment: {increment}.");
                 increment = increment.ToBeta();
