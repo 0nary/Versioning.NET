@@ -119,7 +119,7 @@ namespace Business.Tests.GitVersioning
             await sut.Handle(request, CancellationToken.None);
 
             // Assert
-            assemblyVersioningService.Verify(x => x.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption), Times.Exactly(2));
+            assemblyVersioningService.Verify(x => x.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption), Times.Never);
         }
 
         [Fact]
@@ -156,13 +156,14 @@ namespace Business.Tests.GitVersioning
 
             // Assert
             mediator.Verify(x => x.Send(It.IsAny<GetVersionIncrementQuery>(), CancellationToken.None), Times.Once);
-            mediator.Verify(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None), Times.Once);
-            assemblyVersioningService.Verify(x => x.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption), Times.Exactly(2));
-            gitService.Verify(x => x.CommitChanges(request.GitDirectory, commit.Subject, request.CommitAuthorEmail), Times.Once);
-            gitService.Verify(x => x.GetCommits(request.GitDirectory), Times.Once);
-            gitService.Verify(x => x.CreateTag(request.GitDirectory, $"v{assemblyVersion}", commit.Id), Times.Once);
-            gitService.Verify(x => x.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/heads/{request.BranchName}"), Times.Once);
-            gitService.Verify(x => x.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/tags/v{assemblyVersion}"), Times.Once);
+            mediator.Verify(x => x.Send(It.IsAny<IncrementVersionByWithGitIntegrationCommand>(), CancellationToken.None), Times.Once);
+            mediator.Verify(x => x.Send(It.IsAny<IncrementAssemblyVersionCommand>(), CancellationToken.None), Times.Never);
+            assemblyVersioningService.Verify(x => x.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption), Times.Never);
+            gitService.Verify(x => x.CommitChanges(request.GitDirectory, commit.Subject, request.CommitAuthorEmail), Times.Never);
+            gitService.Verify(x => x.GetCommits(request.GitDirectory), Times.Never);
+            gitService.Verify(x => x.CreateTag(request.GitDirectory, $"v{assemblyVersion}", commit.Id), Times.Never);
+            gitService.Verify(x => x.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/heads/{request.BranchName}"), Times.Never);
+            gitService.Verify(x => x.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/tags/v{assemblyVersion}"), Times.Never);
             gitVersioningService.Verify(x => x.DeterminePriorityIncrement(It.IsAny<IEnumerable<VersionIncrement>>()), Times.Never);
         }
     }

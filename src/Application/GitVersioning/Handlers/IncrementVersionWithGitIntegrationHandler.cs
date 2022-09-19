@@ -52,44 +52,11 @@ namespace Application.GitVersioning.Handlers
         /// <param name="cancellationToken">Propagates notification that operations should be canceled.</param>
         public async Task<Unit> Handle(IncrementVersionWithGitIntegrationCommand request, CancellationToken cancellationToken)
         {
-            var query = new GetVersionIncrementQuery { GitDirectory = request.GitDirectory, RemoteTarget = request.RemoteTarget, BranchName = request.BranchName, SearchOption = request.SearchOption, TargetDirectory = request.TargetDirectory };
-            VersionIncrement increment = await _mediator.Send(query, cancellationToken);
+            GetVersionIncrementQuery getVersionIncrementQuery = new GetVersionIncrementQuery { GitDirectory = request.GitDirectory, RemoteTarget = request.RemoteTarget, BranchName = request.BranchName, SearchOption = request.SearchOption, TargetDirectory = request.TargetDirectory };
+            VersionIncrement increment = await _mediator.Send(getVersionIncrementQuery, cancellationToken);
 
-
-            if (increment == VersionIncrement.None || increment == VersionIncrement.Unknown)
-            {
-                return Unit.Value;
-            }
-
-            if (string.IsNullOrWhiteSpace(request.TargetDirectory))
-            {
-                request.TargetDirectory = request.GitDirectory;
-            }
-
-            SemVersion originalAssemblyVersion = _assemblyVersioningService.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption);
-
-            var command = new IncrementAssemblyVersionCommand
-            {
-                Directory = request.TargetDirectory,
-                SearchOption = request.SearchOption,
-                VersionIncrement = increment,
-                ExitBeta = false
-            };
-            await _mediator.Send(command, cancellationToken);
-
-            SemVersion currentAssemblyVersion = _assemblyVersioningService.GetLatestAssemblyVersion(request.TargetDirectory, request.SearchOption);
-
-            var commitMessage = $"ci(Versioning): Increment version {originalAssemblyVersion} -> {currentAssemblyVersion} [skip ci] [skip hint]";
-            _gitService.CommitChanges(request.GitDirectory, commitMessage, request.CommitAuthorEmail);
-
-            string commitId = _gitService.GetCommits(request.GitDirectory).First(x => x.Subject.Equals(commitMessage)).Id;
-            string tagValue = $"v{currentAssemblyVersion}";
-
-            _gitService.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/heads/{request.BranchName}");
-            _gitService.CreateTag(request.GitDirectory, tagValue, commitId);
-            _gitService.PushRemote(request.GitDirectory, request.RemoteTarget, $"refs/tags/{tagValue}");
-
-            return Unit.Value;
+            IncrementVersionByWithGitIntegrationCommand incrementVersionByWithGitIntegrationCommand = new IncrementVersionByWithGitIntegrationCommand { BranchName = request.BranchName, CommitAuthorEmail = request.CommitAuthorEmail, GitDirectory = request.GitDirectory, RemoteTarget = request.RemoteTarget, SearchOption = request.SearchOption, TargetDirectory = request.TargetDirectory, Increment = increment };
+            return await _mediator.Send(incrementVersionByWithGitIntegrationCommand, cancellationToken);
         }
     }
 }
