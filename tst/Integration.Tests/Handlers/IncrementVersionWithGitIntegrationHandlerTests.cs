@@ -27,8 +27,10 @@ namespace Integration.Tests.Handlers
             using var repo = new Repository(TestRepoDirectory);
             repo.Network.Remotes.Update("origin", updater =>
             {
+                var actor = Environment.GetEnvironmentVariable("GitHubActor");
                 var token = Environment.GetEnvironmentVariable("GitHubAccessToken");
-                var url = $"https://cbcrouse:{token}@github.com/cbcrouse/Versioning.NET.Tests.git";
+                var testRepo = Environment.GetEnvironmentVariable("GitHubTestRepoAddress");
+                var url = $"https://{actor}:{token}@{testRepo}";
                 updater.Url = url;
                 updater.PushUrl = url;
             });
