@@ -36,4 +36,3 @@ jobs:
       env:
         GitHubActor: ${{ github.actor }}
         GitHubAccessToken: ${{ secrets.GITHUBACCESSTOKEN }}
-        GitHubTestRepoAddress: "github.com/0nary/Versioning.NET.Tests"
