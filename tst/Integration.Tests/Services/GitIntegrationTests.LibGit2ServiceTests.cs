@@ -152,7 +152,7 @@ namespace Integration.Tests.Services
             {
                 var actor = Environment.GetEnvironmentVariable("GitHubActor") ?? "cbcrouse";
                 var token = Environment.GetEnvironmentVariable("GitHubAccessToken");
-                var testRepo = Environment.GetEnvironmentVariable("GitHubTestRepoAddress") ?? "github.com/cbcrouse/Versioning.NET.Tests.git";
+                var testRepo = Environment.GetEnvironmentVariable("GitHubTestRepoAddress") ?? $"github.com/{actor}/Versioning.NET.Tests.git";
                 var url = $"https://{actor}:{token}@{testRepo}";
                 updater.Url = url;
                 updater.PushUrl = url;
@@ -187,7 +187,7 @@ namespace Integration.Tests.Services
             {
                 var actor = Environment.GetEnvironmentVariable("GitHubActor") ?? "cbcrouse";
                 var token = Environment.GetEnvironmentVariable("GitHubAccessToken");
-                var testRepo = Environment.GetEnvironmentVariable("GitHubTestRepoAddress") ?? "github.com/cbcrouse/Versioning.NET.Tests.git";
+                var testRepo = Environment.GetEnvironmentVariable("GitHubTestRepoAddress") ?? $"github.com/{actor}/Versioning.NET.Tests.git";
                 var url = $"https://{actor}:{token}@{testRepo}";
                 updater.Url = url;
                 updater.PushUrl = url;

@@ -19,7 +19,8 @@ namespace Integration.Tests.Setup
 
         private void CloneTestRepository()
         {
-            var testRepo = Environment.GetEnvironmentVariable("GitHubTestRepoAddress") ?? "github.com/cbcrouse/Versioning.NET.Tests.git";
+            var actor = Environment.GetEnvironmentVariable("GitHubActor") ?? "cbcrouse";
+            var testRepo = Environment.GetEnvironmentVariable("GitHubTestRepoAddress") ?? $"github.com/{actor}/Versioning.NET.Tests.git";
             CreateTempDirectory();
             var gitPath = Repository.Clone($"https://{testRepo}", _testRepoParentDirectory);
             TestRepoDirectory = Directory.GetParent(gitPath)!.Parent!.FullName;
