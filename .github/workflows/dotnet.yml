@@ -35,5 +35,5 @@ jobs:
         -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
       env:
         GitHubActor: ${{ github.actor }}
-        GitHubAccessToken: ${{ secrets.GITHUB_TOKEN }}
+        GitHubAccessToken: ${{ secrets.GITHUBACCESSTOKEN }}
         GitHubTestRepoAddress: "github.com/0nary/Versioning.NET.Tests"
