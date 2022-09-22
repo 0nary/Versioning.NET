@@ -150,9 +150,9 @@ namespace Integration.Tests.Services
             using var repo = new Repository(TestRepoDirectory);
             repo.Network.Remotes.Update("origin", updater =>
             {
-                var actor = Environment.GetEnvironmentVariable("GitHubActor");
+                var actor = Environment.GetEnvironmentVariable("GitHubActor") ?? "cbcrouse";
                 var token = Environment.GetEnvironmentVariable("GitHubAccessToken");
-                var testRepo = Environment.GetEnvironmentVariable("GitHubTestRepoAddress");
+                var testRepo = Environment.GetEnvironmentVariable("GitHubTestRepoAddress") ?? "github.com/cbcrouse/Versioning.NET.Tests.git";
                 var url = $"https://{actor}:{token}@{testRepo}";
                 updater.Url = url;
                 updater.PushUrl = url;
@@ -185,9 +185,9 @@ namespace Integration.Tests.Services
             using var repo = new Repository(TestRepoDirectory);
             repo.Network.Remotes.Update("origin", updater =>
             {
-                var actor = Environment.GetEnvironmentVariable("GitHubActor");
+                var actor = Environment.GetEnvironmentVariable("GitHubActor") ?? "cbcrouse";
                 var token = Environment.GetEnvironmentVariable("GitHubAccessToken");
-                var testRepo = Environment.GetEnvironmentVariable("GitHubTestRepoAddress");
+                var testRepo = Environment.GetEnvironmentVariable("GitHubTestRepoAddress") ?? "github.com/cbcrouse/Versioning.NET.Tests.git";
                 var url = $"https://{actor}:{token}@{testRepo}";
                 updater.Url = url;
                 updater.PushUrl = url;
